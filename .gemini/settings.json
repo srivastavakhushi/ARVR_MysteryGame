@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "meta-xr-operator": {
+      "command": "C:\\Users\\mpstme.student\\meta-xr-operator\\meta-xr-operator-mcp-proxy.exe",
+      "args": []
+    }
+  }
+}
