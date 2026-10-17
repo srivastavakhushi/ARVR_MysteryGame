@@ -220,9 +220,23 @@ namespace CrimeSceneVR.Locomotion
 #if UNITY_EDITOR
             if (input.sqrMagnitude < 0.01f)
             {
+#if ENABLE_INPUT_SYSTEM
+                var keyboard = UnityEngine.InputSystem.Keyboard.current;
+                if (keyboard != null)
+                {
+                    float h = 0f;
+                    float v = 0f;
+                    if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) h += 1f;
+                    if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) h -= 1f;
+                    if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) v += 1f;
+                    if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) v -= 1f;
+                    input = new Vector2(h, v);
+                }
+#elif ENABLE_LEGACY_INPUT_MANAGER
                 float h = Input.GetAxisRaw("Horizontal");
                 float v = Input.GetAxisRaw("Vertical");
                 input = new Vector2(h, v);
+#endif
             }
 #endif
 
@@ -333,8 +347,17 @@ namespace CrimeSceneVR.Locomotion
 #if UNITY_EDITOR
             if (Mathf.Approximately(stickX, 0f))
             {
+#if ENABLE_INPUT_SYSTEM
+                var keyboard = UnityEngine.InputSystem.Keyboard.current;
+                if (keyboard != null)
+                {
+                    if (keyboard.qKey.wasPressedThisFrame) stickX = -1f;
+                    else if (keyboard.eKey.wasPressedThisFrame) stickX = 1f;
+                }
+#elif ENABLE_LEGACY_INPUT_MANAGER
                 if (Input.GetKeyDown(KeyCode.Q)) stickX = -1f;
                 else if (Input.GetKeyDown(KeyCode.E)) stickX = 1f;
+#endif
             }
 #endif
 
@@ -387,10 +410,18 @@ namespace CrimeSceneVR.Locomotion
             }
 
 #if UNITY_EDITOR
+#if ENABLE_INPUT_SYSTEM
+            var keyboard = UnityEngine.InputSystem.Keyboard.current;
+            if (keyboard != null && (keyboard.tKey.isPressed || keyboard.spaceKey.isPressed))
+            {
+                aimInput = true;
+            }
+#elif ENABLE_LEGACY_INPUT_MANAGER
             if (Input.GetKey(KeyCode.T) || Input.GetKey(KeyCode.Space))
             {
                 aimInput = true;
             }
+#endif
 #endif
 
             if (aimInput)
